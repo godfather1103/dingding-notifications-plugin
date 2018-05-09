@@ -16,4 +16,4 @@ script: mvn install --settings=./settings.xml
 
 notifications:
   email:
-  - ztbsuper@gmail.com
+  - chu.chuanbao@trs.com.cn

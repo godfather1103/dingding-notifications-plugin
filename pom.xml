@@ -8,9 +8,9 @@
         <version>2.11</version>
         <relativePath />
     </parent>
-    <groupId>com.ztbsuper</groupId>
+    <groupId>com.trscd</groupId>
     <artifactId>dingding-notifications</artifactId>
-    <version>1.5-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>hpi</packaging>
 
     <properties>
@@ -27,8 +27,8 @@
         -->
     </properties>
 
-    <name>Dingding[钉钉] Plugin</name>
-    <description>钉钉Jenkins通知插件</description>
+    <name>Dingding[钉钉] Plugin-TRS</name>
+    <description>钉钉Jenkins通知插件-TRS</description>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/Dingding+Notification+Plugin</url>
 
     <!-- The default licence for Jenkins OSS Plugins is MIT. Substitute for the applicable one if needed. -->
@@ -42,9 +42,9 @@
 
     <developers>
         <developer>
-            <id>ztbsuper</id>
-            <name>Marvin Zhang</name>
-            <email>ztbsuper@gmail.com</email>
+            <id>godfather1103</id>
+            <name>chu.chuanbao</name>
+            <email>chu.chuanbao@trs.com.cn</email>
         </developer>
     </developers>
     <scm>

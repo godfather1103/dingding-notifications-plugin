@@ -35,6 +35,35 @@ public class DingdingNotifier extends Notifier {
 
     private String jenkinsURL;
 
+    private String projectIndexURL;
+
+    private String appDownloadURL;
+
+    private String GITLOG;
+
+    private String VersionInfo;
+
+    public String getVersionInfo() {
+        return VersionInfo;
+    }
+
+    public String getGITLOG() {
+        return GITLOG;
+    }
+
+    public void setGITLOG(String GITLOG) {
+        this.GITLOG = GITLOG;
+    }
+
+
+    public String getProjectIndexURL() {
+        return projectIndexURL;
+    }
+
+    public String getAppDownloadURL() {
+        return appDownloadURL;
+    }
+
     public boolean isOnStart() {
         return onStart;
     }
@@ -42,6 +71,7 @@ public class DingdingNotifier extends Notifier {
     public boolean isOnSuccess() {
         return onSuccess;
     }
+
 
     public boolean isOnFailed() {
         return onFailed;
@@ -52,17 +82,32 @@ public class DingdingNotifier extends Notifier {
     }
 
     @DataBoundConstructor
-    public DingdingNotifier(String accessToken, boolean onStart, boolean onSuccess, boolean onFailed, String jenkinsURL) {
+    public DingdingNotifier(String accessToken, String projectIndexURL, String appDownloadURL, String GITLOG, String VersionInfo, boolean onStart, boolean onSuccess, boolean onFailed, String jenkinsURL) {
         super();
         this.accessToken = accessToken;
         this.onStart = onStart;
         this.onSuccess = onSuccess;
         this.onFailed = onFailed;
         this.jenkinsURL = jenkinsURL;
+        this.projectIndexURL = projectIndexURL;
+        this.appDownloadURL = appDownloadURL;
+        this.GITLOG = GITLOG;
+        this.VersionInfo = VersionInfo;
     }
 
     public DingdingService newDingdingService(AbstractBuild build, TaskListener listener) {
-        return new DingdingServiceImpl(jenkinsURL, accessToken, onStart, onSuccess, onFailed, listener, build);
+        String pGitLog="";
+        String pVersionInfo="";
+        try {
+            //相关输入框的数据需要去转义一些变量
+            pGitLog = build.getEnvironment(listener).expand(GITLOG);
+            pVersionInfo = build.getEnvironment(listener).expand(VersionInfo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return new DingdingServiceImpl(jenkinsURL, accessToken, projectIndexURL, appDownloadURL, pGitLog, pVersionInfo, onStart, onSuccess, onFailed, listener, build);
     }
 
     @Override
@@ -92,7 +137,7 @@ public class DingdingNotifier extends Notifier {
 
         @Override
         public String getDisplayName() {
-            return "钉钉通知器配置";
+            return "钉钉通知器配置-TRS";
         }
 
         public String getDefaultURL() {

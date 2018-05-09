@@ -10,9 +10,26 @@
     <f:textbox default="${descriptor.getDefaultURL()}" />
   </f:entry>
 
+  <f:entry title="项目首页" field="projectIndexURL">
+    <f:textbox />
+  </f:entry>
+
+  <f:entry title="介质下载地址" field="appDownloadURL">
+    <f:textbox />
+  </f:entry>
+
   <f:entry title="钉钉access token" field="accessToken">
     <f:textbox  />
   </f:entry>
+
+  <f:entry title="当前版本" field="VersionInfo">
+    <f:textbox  />
+  </f:entry>
+
+  <f:entry title="更新日志" field="GITLOG">
+    <f:textbox  />
+  </f:entry>
+
   <f:entry title="在启动构建时通知">
       <f:checkbox name="onStart" value="true" checked="${instance.isOnStart()}"/>
   </f:entry>

@@ -15,9 +15,15 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 /**
- * Created by Marvin on 16/10/8.
+ * <p>Title:        TRS WCM</p>
+ * <p>Copyright:    Copyright (c) 2004</p>
+ * <p>Company:      www.trs.com.cn</p>
+ * @author  作者: admin E-mail: chu.chuanbao@trs.com.cn
+ * 创建时间：2018/5/8 16:56
+ * @version 1.0
  */
 public class DingdingServiceImpl implements DingdingService {
 
@@ -31,22 +37,35 @@ public class DingdingServiceImpl implements DingdingService {
 
     private boolean onFailed;
 
+    private String GITLOG;
+
+    private String VersionInfo;
+
+    private String projectIndexURL;
+
+    private String appDownloadURL;
+
     private TaskListener listener;
 
     private AbstractBuild build;
 
-    private static final String apiUrl = "https://oapi.dingtalk.com/robot/send?access_token=";
+    private static final String API_URL = "https://oapi.dingtalk.com/robot/send?access_token=";
 
     private String api;
 
-    public DingdingServiceImpl(String jenkinsURL, String token, boolean onStart, boolean onSuccess, boolean onFailed, TaskListener listener, AbstractBuild build) {
+    public DingdingServiceImpl(String jenkinsURL, String token, String projectIndexURL, String appDownloadURL, String GITLOG, String VersionInfo, boolean onStart, boolean onSuccess, boolean onFailed, TaskListener listener, AbstractBuild build) {
         this.jenkinsURL = jenkinsURL;
         this.onStart = onStart;
         this.onSuccess = onSuccess;
         this.onFailed = onFailed;
         this.listener = listener;
         this.build = build;
-        this.api = apiUrl + token;
+        this.api = API_URL + token;
+
+        this.projectIndexURL = projectIndexURL;
+        this.appDownloadURL = appDownloadURL;
+        this.GITLOG = GITLOG;
+        this.VersionInfo = VersionInfo;
     }
 
     @Override
@@ -73,15 +92,30 @@ public class DingdingServiceImpl implements DingdingService {
 
     @Override
     public void success() {
-        String pic = "http://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/sign-check-icon.png";
         String title = String.format("%s%s构建成功", build.getProject().getDisplayName(), build.getDisplayName());
-        String content = String.format("项目[%s%s]构建成功, summary:%s, duration:%s", build.getProject().getDisplayName(), build.getDisplayName(), build.getBuildStatusSummary().message, build.getDurationString());
+        String content = "# 项目[%s%s]构建成功\n" +
+        "##### 主页地址：[%s](%s)\n" +
+        "##### 下载地址：[%s](%s)\n"+
+        "##### 构建时间：%s\n";
+        content = String.format(content,
+                build.getProject().getDisplayName(), build.getDisplayName(),
+                projectIndexURL.length()>36?(projectIndexURL.substring(0,33)+"..."):projectIndexURL,
+                projectIndexURL,
+                appDownloadURL.length()>36?(appDownloadURL.substring(0,33)+"..."):appDownloadURL,
+                appDownloadURL,
+                build.getDurationString()
+        );
 
-        String link = getBuildUrl();
-        logger.info(link);
+        if (VersionInfo!=null&&VersionInfo.length()>0){
+            content = content + "##### 版本信息："+VersionInfo+"\n";
+        }
+
+        if (GITLOG!=null&&GITLOG.length()>0){
+            content = content + "##### 更新日志："+GITLOG+"\n";
+        }
+        
         if (onSuccess) {
-            logger.info("send link msg from " + listener.toString());
-            sendLinkMessage(link, content, title, pic);
+            sendMarkdownMessage(content, title);
         }
     }
 
@@ -118,6 +152,33 @@ public class DingdingServiceImpl implements DingdingService {
         linkObject.put("messageUrl", link);
 
         body.put("link", linkObject);
+        try {
+            post.setRequestEntity(new StringRequestEntity(body.toJSONString(), "application/json", "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            logger.error("build request error", e);
+        }
+        try {
+            client.executeMethod(post);
+            logger.info(post.getResponseBodyAsString());
+        } catch (IOException e) {
+            logger.error("send msg error", e);
+        }
+        post.releaseConnection();
+    }
+
+    private void sendMarkdownMessage(String msg, String title) {
+        HttpClient client = getHttpClient();
+        PostMethod post = new PostMethod(api);
+
+        JSONObject body = new JSONObject();
+        body.put("msgtype", "markdown");
+
+        JSONObject linkObject = new JSONObject();
+        linkObject.put("text", msg);
+        linkObject.put("title", title);
+
+        body.put("markdown", linkObject);
         try {
             post.setRequestEntity(new StringRequestEntity(body.toJSONString(), "application/json", "UTF-8"));
         } catch (UnsupportedEncodingException e) {
