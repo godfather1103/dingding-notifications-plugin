@@ -1,4 +1,4 @@
-package com.ztbsuper.dingding;
+package com.trscd.dingding;
 
 import com.alibaba.fastjson.JSONObject;
 import hudson.ProxyConfiguration;
@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Map;
 
 /**
  * <p>Title:        TRS WCM</p>

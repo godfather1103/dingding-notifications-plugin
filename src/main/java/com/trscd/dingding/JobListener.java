@@ -1,4 +1,4 @@
-package com.ztbsuper.dingding;
+package com.trscd.dingding;
 
 import hudson.Extension;
 import hudson.model.AbstractBuild;

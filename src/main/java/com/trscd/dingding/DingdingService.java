@@ -1,4 +1,4 @@
-package com.ztbsuper.dingding;
+package com.trscd.dingding;
 
 /**
  * Created by Marvin on 16/10/8.
