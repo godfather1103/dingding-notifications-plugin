@@ -40,6 +40,8 @@ public class DingdingServiceImpl implements DingdingService {
 
     private String VersionInfo;
 
+    private String customContent;
+
     private String projectIndexURL;
 
     private String appDownloadURL;
@@ -52,7 +54,7 @@ public class DingdingServiceImpl implements DingdingService {
 
     private String api;
 
-    public DingdingServiceImpl(String jenkinsURL, String token, String projectIndexURL, String appDownloadURL, String GITLOG, String VersionInfo, boolean onStart, boolean onSuccess, boolean onFailed, TaskListener listener, AbstractBuild build) {
+    public DingdingServiceImpl(String jenkinsURL, String token, String projectIndexURL, String appDownloadURL, String GITLOG, String VersionInfo, String customContent,boolean onStart, boolean onSuccess, boolean onFailed, TaskListener listener, AbstractBuild build) {
         this.jenkinsURL = jenkinsURL;
         this.onStart = onStart;
         this.onSuccess = onSuccess;
@@ -65,6 +67,7 @@ public class DingdingServiceImpl implements DingdingService {
         this.appDownloadURL = appDownloadURL;
         this.GITLOG = GITLOG;
         this.VersionInfo = VersionInfo;
+        this.customContent = customContent;
     }
 
     @Override
@@ -92,29 +95,73 @@ public class DingdingServiceImpl implements DingdingService {
     @Override
     public void success() {
         String title = String.format("%s%s构建成功", build.getProject().getDisplayName(), build.getDisplayName());
-        String content = "# 项目[%s%s]构建成功\n" +
-        "##### 主页地址：[%s](%s)\n" +
-        "##### 下载地址：[%s](%s)\n"+
-        "##### 构建时间：%s\n";
-        content = String.format(content,
-                build.getProject().getDisplayName(), build.getDisplayName(),
-                projectIndexURL.length()>36?(projectIndexURL.substring(0,33)+"..."):projectIndexURL,
-                projectIndexURL,
-                appDownloadURL.length()>36?(appDownloadURL.substring(0,33)+"..."):appDownloadURL,
-                appDownloadURL,
-                build.getDurationString()
-        );
 
-        if (VersionInfo!=null&&VersionInfo.length()>0){
-            content = content + "##### 版本信息："+VersionInfo+"\n";
+        StringBuilder result = new StringBuilder();
+
+
+        String content = "# 项目[%s%s]构建成功\n";
+        result.append(String.format(content,
+                build.getProject().getDisplayName(), build.getDisplayName()
+        ));
+//        content = String.format(content,
+//                build.getProject().getDisplayName(), build.getDisplayName()
+//        );
+
+        //添加项目主页
+        if (!DingdingUtils.checkStrIsEmpty(projectIndexURL)){
+            content = "##### 主页地址：[%s](%s)\n";
+            result.append(String.format(content,
+                    projectIndexURL.length()>36?(projectIndexURL.substring(0,33)+"..."):projectIndexURL,
+                    projectIndexURL
+            ));
+
+//            content = content + "##### 主页地址：[%s](%s)\n";
+//            content = String.format(content,
+//                    projectIndexURL.length()>36?(projectIndexURL.substring(0,33)+"..."):projectIndexURL,
+//                    projectIndexURL
+//            );
         }
 
-        if (GITLOG!=null&&GITLOG.length()>0){
-            content = content + "##### 更新日志："+GITLOG+"\n";
+        //添加下载地址
+        if (!DingdingUtils.checkStrIsEmpty(appDownloadURL)){
+            content = "##### 下载地址：[%s](%s)\n";
+            result.append(String.format(content,
+                    appDownloadURL.length()>36?(appDownloadURL.substring(0,33)+"..."):appDownloadURL,
+                    appDownloadURL
+            ));
+
+//            content = content + "##### 下载地址：[%s](%s)\n";
+//            content = String.format(content,
+//                    appDownloadURL.length()>36?(appDownloadURL.substring(0,33)+"..."):appDownloadURL,
+//                    appDownloadURL
+//            );
+        }
+
+        //添加时间
+        content = "##### 构建时间：%s\n";
+        result.append(String.format(content,build.getDurationString()));
+
+
+//        content = content + "##### 构建时间：%s\n";
+//        content = String.format(content,build.getDurationString());
+
+        if (!DingdingUtils.checkStrIsEmpty(VersionInfo)){
+            result.append("##### 版本信息："+VersionInfo+"\n");
+//            content = content + "##### 版本信息："+VersionInfo+"\n";
+        }
+
+        if (!DingdingUtils.checkStrIsEmpty(GITLOG)){
+            result.append("##### 更新日志："+GITLOG+"\n");
+//            content = content + "##### 更新日志："+GITLOG+"\n";
+        }
+
+        if (!DingdingUtils.checkStrIsEmpty(customContent)){
+            result.append(customContent);
+//            content = content+customContent;
         }
         
         if (onSuccess) {
-            sendMarkdownMessage(content, title);
+            sendMarkdownMessage(result.toString(), title);
         }
     }
 

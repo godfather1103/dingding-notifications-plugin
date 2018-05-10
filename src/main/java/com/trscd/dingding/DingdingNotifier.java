@@ -43,6 +43,12 @@ public class DingdingNotifier extends Notifier {
 
     private String VersionInfo;
 
+    private String customContent;
+
+    public String getCustomContent() {
+        return customContent;
+    }
+
     public String getVersionInfo() {
         return VersionInfo;
     }
@@ -82,7 +88,7 @@ public class DingdingNotifier extends Notifier {
     }
 
     @DataBoundConstructor
-    public DingdingNotifier(String accessToken, String projectIndexURL, String appDownloadURL, String GITLOG, String VersionInfo, boolean onStart, boolean onSuccess, boolean onFailed, String jenkinsURL) {
+    public DingdingNotifier(String accessToken, String projectIndexURL, String appDownloadURL, String GITLOG, String VersionInfo, String customContent, boolean onStart, boolean onSuccess, boolean onFailed, String jenkinsURL) {
         super();
         this.accessToken = accessToken;
         this.onStart = onStart;
@@ -93,21 +99,24 @@ public class DingdingNotifier extends Notifier {
         this.appDownloadURL = appDownloadURL;
         this.GITLOG = GITLOG;
         this.VersionInfo = VersionInfo;
+        this.customContent = customContent;
     }
 
     public DingdingService newDingdingService(AbstractBuild build, TaskListener listener) {
         String pGitLog="";
         String pVersionInfo="";
+        String pCustomContent="";
         try {
             //相关输入框的数据需要去转义一些变量
             pGitLog = build.getEnvironment(listener).expand(GITLOG);
             pVersionInfo = build.getEnvironment(listener).expand(VersionInfo);
+            pCustomContent = build.getEnvironment(listener).expand(customContent);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return new DingdingServiceImpl(jenkinsURL, accessToken, projectIndexURL, appDownloadURL, pGitLog, pVersionInfo, onStart, onSuccess, onFailed, listener, build);
+        return new DingdingServiceImpl(jenkinsURL, accessToken, projectIndexURL, appDownloadURL, pGitLog, pVersionInfo, pCustomContent, onStart, onSuccess, onFailed, listener, build);
     }
 
     @Override
