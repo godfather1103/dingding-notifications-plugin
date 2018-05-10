@@ -99,9 +99,11 @@ public class DingdingServiceImpl implements DingdingService {
         StringBuilder result = new StringBuilder();
 
 
-        String content = "# [%s%s]\n> ##### 构建成功\n";
+        String content = "# [%s%s]\n> ##### 构建成功\n> ##### 构建时间：%s\n\n";
         result.append(String.format(content,
-                build.getProject().getDisplayName(), build.getDisplayName()
+                build.getProject().getDisplayName(),
+                build.getDisplayName(),
+                build.getDurationString()
         ));
 
         //添加项目主页
@@ -121,10 +123,6 @@ public class DingdingServiceImpl implements DingdingService {
                     appDownloadURL
             ));
         }
-
-        //添加时间
-        content = "> ##### 构建时间：%s\n";
-        result.append(String.format(content,build.getDurationString()));
 
         if (!DingdingUtils.checkStrIsEmpty(VersionInfo)){
             result.append("##### 版本信息："+VersionInfo+"\n");
