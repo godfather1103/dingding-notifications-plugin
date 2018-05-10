@@ -99,13 +99,10 @@ public class DingdingServiceImpl implements DingdingService {
         StringBuilder result = new StringBuilder();
 
 
-        String content = "# 项目[%s%s]构建成功\n";
+        String content = "# [%s%s]\n> ##### 构建成功\n";
         result.append(String.format(content,
                 build.getProject().getDisplayName(), build.getDisplayName()
         ));
-//        content = String.format(content,
-//                build.getProject().getDisplayName(), build.getDisplayName()
-//        );
 
         //添加项目主页
         if (!DingdingUtils.checkStrIsEmpty(projectIndexURL)){
@@ -114,12 +111,6 @@ public class DingdingServiceImpl implements DingdingService {
                     projectIndexURL.length()>36?(projectIndexURL.substring(0,33)+"..."):projectIndexURL,
                     projectIndexURL
             ));
-
-//            content = content + "##### 主页地址：[%s](%s)\n";
-//            content = String.format(content,
-//                    projectIndexURL.length()>36?(projectIndexURL.substring(0,33)+"..."):projectIndexURL,
-//                    projectIndexURL
-//            );
         }
 
         //添加下载地址
@@ -129,35 +120,22 @@ public class DingdingServiceImpl implements DingdingService {
                     appDownloadURL.length()>36?(appDownloadURL.substring(0,33)+"..."):appDownloadURL,
                     appDownloadURL
             ));
-
-//            content = content + "##### 下载地址：[%s](%s)\n";
-//            content = String.format(content,
-//                    appDownloadURL.length()>36?(appDownloadURL.substring(0,33)+"..."):appDownloadURL,
-//                    appDownloadURL
-//            );
         }
 
         //添加时间
-        content = "##### 构建时间：%s\n";
+        content = "> ##### 构建时间：%s\n";
         result.append(String.format(content,build.getDurationString()));
-
-
-//        content = content + "##### 构建时间：%s\n";
-//        content = String.format(content,build.getDurationString());
 
         if (!DingdingUtils.checkStrIsEmpty(VersionInfo)){
             result.append("##### 版本信息："+VersionInfo+"\n");
-//            content = content + "##### 版本信息："+VersionInfo+"\n";
         }
 
         if (!DingdingUtils.checkStrIsEmpty(GITLOG)){
             result.append("##### 更新日志："+GITLOG+"\n");
-//            content = content + "##### 更新日志："+GITLOG+"\n";
         }
 
         if (!DingdingUtils.checkStrIsEmpty(customContent)){
             result.append(customContent);
-//            content = content+customContent;
         }
         
         if (onSuccess) {
