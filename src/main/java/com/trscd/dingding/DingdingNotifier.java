@@ -103,11 +103,19 @@ public class DingdingNotifier extends Notifier {
     }
 
     public DingdingService newDingdingService(AbstractBuild build, TaskListener listener) {
+        String pJenkinsURL = "";
+        String pAccessToken = "";
+        String pProjectIndexURL = "";
+        String pAppDownloadURL = "";
         String pGitLog="";
         String pVersionInfo="";
         String pCustomContent="";
         try {
             //相关输入框的数据需要去转义一些变量
+            pJenkinsURL = build.getEnvironment(listener).expand(jenkinsURL);
+            pAccessToken = build.getEnvironment(listener).expand(accessToken);
+            pProjectIndexURL = build.getEnvironment(listener).expand(projectIndexURL);
+            pAppDownloadURL = build.getEnvironment(listener).expand(appDownloadURL);
             pGitLog = build.getEnvironment(listener).expand(GITLOG);
             pVersionInfo = build.getEnvironment(listener).expand(VersionInfo);
             pCustomContent = build.getEnvironment(listener).expand(customContent);
@@ -116,7 +124,7 @@ public class DingdingNotifier extends Notifier {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return new DingdingServiceImpl(jenkinsURL, accessToken, projectIndexURL, appDownloadURL, pGitLog, pVersionInfo, pCustomContent, onStart, onSuccess, onFailed, listener, build);
+        return new DingdingServiceImpl(pJenkinsURL, pAccessToken, pProjectIndexURL, pAppDownloadURL, pGitLog, pVersionInfo, pCustomContent, onStart, onSuccess, onFailed, listener, build);
     }
 
     @Override
