@@ -154,7 +154,7 @@ public class DingdingNotifier extends Notifier {
 
         @Override
         public String getDisplayName() {
-            return "钉钉通知器配置-TRS";
+            return "钉钉通知器配置";
         }
 
         public String getDefaultURL() {

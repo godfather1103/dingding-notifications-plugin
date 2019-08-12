@@ -9,7 +9,7 @@
         <relativePath />
     </parent>
     <groupId>com.trscd</groupId>
-    <artifactId>dingding-notifications-trs</artifactId>
+    <artifactId>dingding-notifications</artifactId>
     <version>1.2.3</version>
     <packaging>hpi</packaging>
 
@@ -27,8 +27,8 @@
         -->
     </properties>
 
-    <name>Dingding[钉钉] Plugin-TRS</name>
-    <description>钉钉Jenkins通知插件-TRS</description>
+    <name>Dingding[钉钉] Plugin</name>
+    <description>钉钉Jenkins通知插件</description>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/Dingding+Notification+Plugin</url>
 
     <!-- The default licence for Jenkins OSS Plugins is MIT. Substitute for the applicable one if needed. -->
